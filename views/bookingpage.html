@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .step {
+            margin-bottom: 20px;
+        }
+        .step h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .room-details, .filter-section {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .room-details span, .filter-section label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .total-price {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="step">
+            <h2>選擇您的房型</h2>
+            <form id="filter-form">
+                <div class="filter-section">
+                    <h3>房型設備</h3>
+                    <label><input type="checkbox" name="amenities" value="a"> 特大號床</label>
+                    <label><input type="checkbox" name="amenities" value="b"> 免費Wi-Fi</label>
+                    <label><input type="checkbox" name="amenities" value="c"> 液晶電視</label>
+                    <label><input type="checkbox" name="amenities" value="d"> 迷你吧</label>
+                    <label><input type="checkbox" name="amenities" value="e"> 私人浴室</label>
+                    <label><input type="checkbox" name="amenities" value="f"> 客廳區域</label>
+                    <label><input type="checkbox" name="amenities" value="g"> 觀景陽台</label>
+                    <label><input type="checkbox" name="amenities" value="h"> 獨立書房</label>
+                    <label><input type="checkbox" name="amenities" value="i"> 休息區</label>
+                    <label><input type="checkbox" name="amenities" value="j"> 特大沙發</label>
+                </div>
+                <div class="filter-section">
+                    <h3>入住人數</h3>
+                    <label for="guests">人數：</label>
+                    <input type="number" id="guests" name="guests" min="1" max="10" required>
+                </div>
+                <div class="filter-section">
+                    <h3>入住與退房時間</h3>
+                    <label for="checkin-date">預計入住時間</label>
+                    <input type="date" id="checkin-date" name="checkin-date" required>
+                    <label for="checkout-date">預計退房時間</label>
+                    <input type="date" id="checkout-date" name="checkout-date" required>
+                </div>
+                <button type="button" onclick="filterRooms()">篩選房型</button>
+            </form>
+            <div class="results-section" id="results-section">
+                <h3>建議的房型</h3>
+                <ul id="results-list"></ul>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>步驟 1: 旅客資訊</h2>
+            <div class="form-group">
+                <label for="last-name">姓氏 (請輸入英文)</label>
+                <input type="text" id="last-name" name="last-name" required>
+            </div>
+            <div class="form-group">
+                <label for="first-name">名字 (請輸入英文)</label>
+                <input type="text" id="first-name" name="first-name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">確認電子郵件地址</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">行動電話</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>步驟 2: 房屋詳細資料</h2>
+            <div class="room-details" id="room-details">
+                <span>請選擇一個房型來查看詳情</span>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>步驟 3: 付款資訊</h2>
+            <div class="form-group">
+                <label for="card-last-name">姓氏 (請輸入英文)</label>
+                <input type="text" id="card-last-name" name="card-last-name" required>
+            </div>
+            <div class="form-group">
+                <label for="card-first-name">名字 (請輸入英文)</label>
+                <input type="text" id="card-first-name" name="card-first-name" required>
+            </div>
+            <div class="form-group">
+                <label for="card-number">卡號</label>
+                <input type="text" id="card-number" name="card-number" required>
+            </div>
+            <div class="form-group">
+                <label for="expiry-date">有效日期</label>
+                <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YY" required>
+            </div>
+            <div class="form-group">
+                <label for="cvv">信用卡安全碼</label>
+                <input type="text" id="cvv" name="cvv" required>
+            </div>
+        </div>
+
+        <div class="step">
+            <button type="submit" class="btn-submit">預訂</button>
+        </div>
+    </div>
+
+    <script>
+        const rooms = [
+            {
+                name: '奇幻套房',
+                amenities: ['a', 'b', 'c', 'd', 'e'],
+                capacity: 1,
+                price: 4283
+            },
+            {
+                name: '絕佳套房',
+                amenities: ['a', 'b', 'c', 'd', 'e', 'f'],
+                capacity: 2,
+                price: 5283
+            },
+            {
+                name: '壯美套房',
+                amenities: ['a', 'b', 'c', 'd', 'e', 'g'],
+                capacity: 2,
+                price: 6283
+            },
+            {
+                name: '非凡套房',
+                amenities: ['a', 'b', 'c', 'd', 'e', 'h', 'i'],
+                capacity: 4,
+                price: 7283
+            },
+            {
+                name: '驚喜套房',
+                amenities: ['a', 'b', 'c', 'd', 'e', 'h', 'j'],
+                capacity: 6,
+                price: 8283
+            }
+        ];
+
+        function filterRooms() {
+            const form = document.getElementById('filter-form');
+            const formData = new FormData(form);
+            const selectedAmenities = formData.getAll('amenities');
+            const guests = parseInt(formData.get('guests'));
+            const checkinDate = formData.get('checkin-date');
+            const checkoutDate = formData.get('checkout-date');
+
+            const filteredRooms = rooms.filter(room => {
+                return selectedAmenities.every(amenity => room.amenities.includes(amenity)) && room.capacity >= guests;
+            });
+
+            displayResults(filteredRooms, checkinDate, checkoutDate);
+        }
+
+        function displayResults(filteredRooms, checkinDate, checkoutDate) {
+            const resultsList = document.getElementById('results-list');
+            resultsList.innerHTML = '';
+
+            if (filteredRooms.length > 0) {
+                filteredRooms.forEach(room => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = "#";
+                    link.textContent = room.name;
+                    link.onclick = () => displayRoomDetails(room, checkinDate, checkoutDate);
+                    listItem.appendChild(link);
+                    resultsList.appendChild(listItem);
+                });
+            } else {
+                resultsList.textContent = '沒有符合條件的房型。';
+            }
+        }
+
+        function displayRoomDetails(room, checkinDate, checkoutDate) {
+            const roomDetails = document.getElementById('room-details');
+            const totalPrice = room.price + room.price * 0.15;
+            roomDetails.innerHTML = `
+                <span>房型名稱: ${room.name}</span>
+                <span>入住人數: ${room.capacity} 人</span>
+                <span>每房每晚價格: NT$${room.price}</span>
+                <span>住宿特色: ${getAmenitiesDescription(room.amenities)}</span>
+                <span>入住日期: ${checkinDate}</span>
+                <span>退房日期: ${checkoutDate}</span>
+                <span class="total-price">總價: NT$${totalPrice.toFixed(2)}</span>
+            `;
+        }
+
+        function getAmenitiesDescription(amenities) {
+            const amenitiesMap = {
+                'a': '特大號床',
+                'b': '免費Wi-Fi',
+                'c': '液晶電視',
+                'd': '迷你吧',
+                'e': '私人浴室',
+                'f': '客廳區域',
+                'g': '觀景陽台',
+                'h': '獨立書房',
+                'i': '休息區',
+                'j': '特大沙發'
+            };
+            return amenities.map(amenity => amenitiesMap[amenity]).join(', ');
+        }
+    </script>
+<script>
+    document.querySelector('.btn-submit').addEventListener('click', function(event) {
+        event.preventDefault(); // 防止默認表單提交行為
+
+        const selectedRoomElement = document.querySelector('#results-list a.selected');
+        const roomType = selectedRoomElement ? selectedRoomElement.textContent : '';
+
+        const roomPriceElement = document.querySelector('#room-details .total-price');
+        const totalPriceText = roomPriceElement ? roomPriceElement.textContent.replace('NT$', '').replace(/,/g, '') : '0';
+        const totalPrice = parseFloat(totalPriceText);
+
+        const checkinDate = document.getElementById('checkin-date').value;
+        const checkoutDate = document.getElementById('checkout-date').value;
+
+        const formData = {
+            lastName: document.getElementById('last-name').value,
+            firstName: document.getElementById('first-name').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            cardLastName: document.getElementById('card-last-name').value,
+            cardFirstName: document.getElementById('card-first-name').value,
+            cardNumber: document.getElementById('card-number').value,
+            expiryDate: document.getElementById('expiry-date').value,
+            cvv: document.getElementById('cvv').value,
+            roomType: roomType,
+            checkinDate: checkinDate,
+            checkoutDate: checkoutDate,
+            totalPrice: totalPrice
+        };
+
+        fetch('/submit-booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Booking submitted successfully.');
+            } else {
+                alert('Error submitting booking: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    function filterRooms() {
+        const form = document.getElementById('filter-form');
+        const formData = new FormData(form);
+        const selectedAmenities = formData.getAll('amenities');
+        const guests = parseInt(formData.get('guests'));
+        const checkinDate = formData.get('checkin-date');
+        const checkoutDate = formData.get('checkout-date');
+
+        const filteredRooms = rooms.filter(room => {
+            return selectedAmenities.every(amenity => room.amenities.includes(amenity)) && room.capacity >= guests;
+        });
+
+        displayResults(filteredRooms, checkinDate, checkoutDate);
+    }
+
+    function displayResults(filteredRooms, checkinDate, checkoutDate) {
+        const resultsList = document.getElementById('results-list');
+        resultsList.innerHTML = '';
+
+        if (filteredRooms.length > 0) {
+            filteredRooms.forEach(room => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = "#";
+                link.textContent = room.name;
+                link.onclick = () => {
+                    displayRoomDetails(room, checkinDate, checkoutDate);
+                    // 添加選擇樣式到選中的房型
+                    document.querySelectorAll('#results-list a').forEach(a => a.classList.remove('selected'));
+                    link.classList.add('selected');
+                };
+                listItem.appendChild(link);
+                resultsList.appendChild(listItem);
+            });
+        } else {
+            resultsList.textContent = '沒有符合條件的房型。';
+        }
+    }
+
+    function displayRoomDetails(room, checkinDate, checkoutDate) {
+        const roomDetails = document.getElementById('room-details');
+        const totalPrice = room.price + room.price * 0.15;
+        roomDetails.innerHTML = `
+            <span>房型名稱: ${room.name}</span>
+            <span>入住人數: ${room.capacity} 人</span>
+            <span>每房每晚價格: NT$${room.price}</span>
+            <span>住宿特色: ${getAmenitiesDescription(room.amenities)}</span>
+            <span>入住日期: ${checkinDate}</span>
+            <span>退房日期: ${checkoutDate}</span>
+            <span class="total-price">總價: NT$${totalPrice.toFixed(2)}</span>
+        `;
+    }
+
+    function getAmenitiesDescription(amenities) {
+        const amenitiesMap = {
+            'a': '特大號床',
+            'b': '免費Wi-Fi',
+            'c': '液晶電視',
+            'd': '迷你吧',
+            'e': '私人浴室',
+            'f': '客廳區域',
+            'g': '觀景陽台',
+            'h': '獨立書房',
+            'i': '休息區',
+            'j': '特大沙發'
+        };
+        return amenities.map(amenity => amenitiesMap[amenity]).join(', ');
+    }
+</script>
+
+
+    
+</body>
+</html>
